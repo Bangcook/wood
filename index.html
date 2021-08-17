@@ -1,0 +1,105 @@
+<!-- June 20, 2021 - Hannah -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Index - BK Lee</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width" />
+    <link rel="preconnect" href="https://fonts.gstatic.com"> 
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500&display=swap" rel="stylesheet">
+    <style> 
+        .sans_sarif{font-family: 'Noto Sans KR', sans-serif;font-size: small;}
+        .sans_sarif_blue{font-family: 'Noto Sans KR', sans-serif;font-size: large; color: #042557}
+        .sans_sarif_red{font-family: 'Noto Sans KR', sans-serif;font-size: small; color: red}
+        .sans_sarif_white{font-family: 'Noto Sans KR', sans-serif;font-size: small; color: white}
+        .sans_sarif_xs{font-family: 'Noto Sans KR', sans-serif;font-size: x-small;}
+        .sans_sarif_l{font-family: 'Noto Sans KR', sans-serif;font-size: large;}
+        table {
+            border-collapse: collapse;
+        }
+        td {
+            padding: 5px 10px;
+            text-align: center;
+        }
+        input {
+            border: none;
+            background-color: #f5f5f5;
+            -webkit-appearance:none;
+        }
+        textarea {
+            border: none;
+            background-color: #f5f5f5;
+        }
+        button {
+            appearance: none;
+            -webkit-appearance: none;
+            background-color: #f5f5f5;
+            border-color: #f5f5f5;
+        }
+        input:focus {
+            outline: none;
+        }
+        input[type='number']{
+            width: 100px;
+        } 
+    </style>
+</head>
+
+<body>
+    <table> 
+        <tr>
+            <td>
+                <P class="sans_sarif_l"><b>*목재 계산기</b></P>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="button" class="sans_sarif" value="mm 계산기" style="WIDTH: 250pt; HEIGHT: 30pt" onclick="goto_MMtoSai()">
+            </td>
+        </tr>
+        <tr>
+            <td >
+                <input type="button" class="sans_sarif" value="자/치 계산기" style="WIDTH: 250pt; HEIGHT: 30pt" onclick="goto_SaiToMM()"> 
+            </td>
+        </tr>
+        <tr>
+            <td >
+                <input type="button" class="sans_sarif" value="문틀 사이수 계산기" style="WIDTH: 250pt; HEIGHT: 30pt" onclick="goto_DoorToSai()"> 
+            </td>
+        </tr>
+        <tr>
+            <td >
+                <input type="button" class="sans_sarif" value="핸드레일 계산기" style="WIDTH: 250pt; HEIGHT: 30pt" onclick="goto_HandRail()"> 
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <br>
+                <img src="./homescreen.jpg" width="330">
+            </td>
+        </tr>
+    </table>
+
+    <script>
+
+        function goto_MMtoSai() {
+            window.location.href = './Convert_MMtoSai_Calculation.html';
+        }
+
+        function goto_SaiToMM() {
+            window.location.href = './Convert_SaitoMM_Calculation.html';
+        }
+
+        function goto_DoorToSai() {
+            window.location.href = './Convert_DoorSai_Calculation.html';
+        }
+
+        function goto_HandRail() {
+            window.location.href = './Handrail_Calculation.html';
+        }
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,402 @@
+<!-- June 12, 2021 - Hannah -->
+<!-- 구 사이수계산기 -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>자/치 계산기 - BK Lee</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width" />
+    <link rel="preconnect" href="https://fonts.gstatic.com"> 
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500&display=swap" rel="stylesheet">
+    <style> 
+        .sans_sarif{font-family: 'Noto Sans KR', sans-serif;font-size: small;}
+        .sans_sarif_red{font-family: 'Noto Sans KR', sans-serif;font-size: small; color: red}
+        .sans_sarif_white{font-family: 'Noto Sans KR', sans-serif;font-size: small; color: white}
+        .sans_sarif_xs{font-family: 'Noto Sans KR', sans-serif;font-size: x-small;}
+        .sans_sarif_l{font-family: 'Noto Sans KR', sans-serif;font-size: large;}
+        table {
+            border-collapse: collapse;
+        }
+        td {
+            padding: 3px 10px;
+            text-align: center;
+        }
+        input {
+            border: none;
+            background-color: #f5f5f5;
+            -webkit-appearance:none;
+        }
+        textarea {
+            border: none;
+            background-color: #f5f5f5;
+        }
+        button {
+            appearance: none;
+            -webkit-appearance: none;
+            background-color: #f5f5f5;
+            border-color: #d0d0d0;
+        }
+        input:focus {
+            outline: none;
+        }
+        input[type='number']{
+            width: 70px;
+        } 
+
+    </style>
+</head>
+
+<body>
+    <P class="sans_sarif_l"><b>자/치 계산기</b></P>
+    <table border="2" bordercolor="#D9D9D9">
+        <tr style="background-color:rgb(223,130,68);">
+            <td class="sans_sarif"></td>
+            <td class="sans_sarif_white">기입값(치)</td>
+            <td class="sans_sarif_white">계산값(mm)</td>
+        <tr>
+            <td class="sans_sarif">수종</td>
+            <td class="sans_sarif" colspan="2" style="text-align: left;">
+                <select id="woodType" name="woodType" onkeyup="enterkey();">
+                    <option value="meesong">미송</option>
+                    <option value="rawang" selected="selected">라왕</option>
+                    <option value="oak">오크</option>
+                    <option value="ash">애쉬</option>
+                    <option value="walnut">월넛</option>
+                    <option value="mayple">메이플</option>
+                </select>
+            </td>
+        </tr>        
+        <tr>
+            <td class="sans_sarif">기장(치)</td>
+            <td>
+                <input type="number" id="length" pattern="\d*" placeholder="number" maxlength="10" class="sans_sarif" onkeyup="moveToWidth();" size="5" oninput="maxLengthCheck(this)">
+            </td>
+            <td style="background-color:rgb(248,229,216);" >
+                <input type="text" id="sai_length" maxlength="10" class="sans_sarif" size="6" style="background-color:rgb(248,229,216);" readonly>
+            </td>
+        </tr>
+        <tr>
+            <td class="sans_sarif">폭(치)</td>
+            <td>
+                <input type="number" id="width" pattern="\d*" placeholder="number" maxlength="10" class="sans_sarif" onkeyup="moveToThickness();" size="5" oninput="maxLengthCheck(this)">
+            </td>
+            <td style="background-color:rgb(248,229,216);" >
+                <input type="text" id="sai_width" maxlength="10" class="sans_sarif" size="6" style="background-color:rgb(248,229,216);" readonly>
+            </td>
+        </tr>
+        <tr>
+            <td class="sans_sarif">두께(치)</td>
+            <td>
+                <input type="number" id="thickness" pattern="\d*" placeholder="number" maxlength="10" class="sans_sarif" onkeyup="MoveToQuantity();" size="5" oninput="maxLengthCheck(this)">
+            </td>
+            <td style="background-color:rgb(248,229,216);" >
+                <input type="text" id="sai_thickness" maxlength="10" class="sans_sarif" size="6" style="background-color:rgb(248,229,216);" readonly>
+            </td>
+        </tr>
+        <tr>
+            <td class="sans_sarif">수량</td>
+            <td>
+                <input type="number" id="quantity" pattern="\d*" placeholder="number" maxlength="10" class="sans_sarif" onkeyup="enterkey();" size="5" oninput="maxLengthCheck(this)">
+            </td>
+            <td style="background-color:rgb(248,229,216);">
+                <input type="text" id="sai_quantity" maxlength="10" class="sans_sarif" size="6" style="background-color:rgb(248,229,216);" readonly>
+            </td>
+        </tr>
+        <tr>
+            <td class="sans_sarif">사이수</td>
+            <td>
+            </td>
+            <td style="background-color:rgb(248,229,216);">
+                <input type="text" id="result_sai" maxlength="10" class="sans_sarif_red" size="6" style="background-color:rgb(248,229,216);" readonly>
+            </td>
+        </tr>
+        <tr>
+            <td class="sans_sarif">
+            </td>
+            <td class="sans_sarif" size="15" colspan="2" >
+                <input type="button" value="초기화" style="WIDTH: 60pt; HEIGHT: 20pt" onclick="reset()">
+                &nbsp;&nbsp;&nbsp;
+                <input type="button" value="계산하기" style="WIDTH: 60pt; HEIGHT: 20pt" onclick="calculate()"> 
+            </td>
+        </tr>
+    </table>
+    <br>
+    <table border="2" bordercolor="#D9D9D9">
+        <tr>
+            <td class="sans_sarif">사이당 단가</td>
+            <td>
+                <input type="number" id="price" pattern="\d*" placeholder="number" maxlength="10" class="sans_sarif" onkeyup="MoveToExtraPrice();" size="12" oninput="maxLengthCheck(this)">
+            </td>
+        </tr>
+        <tr>
+            <td class="sans_sarif">추가단가/자</td>
+            <td>
+                <input type="number" id="price_extra" pattern="\d*" placeholder="number" maxlength="10" class="sans_sarif" onkeyup="enterkey_price();" size="12" oninput="maxLengthCheck(this)">
+            </td>
+        </tr>
+        <tr>
+            <td class="sans_sarif">개당 단가</td>
+            <td style="background-color:rgb(248,229,216);" >
+                <input type="text" id="sai_price" maxlength="10" class="sans_sarif_red" size="12" style="background-color:rgb(248,229,216);" readonly>
+            </td>
+        </tr>
+        <tr>
+            <td class="sans_sarif">
+            </td>
+            <td class="sans_sarif" size="15" colspan="2" >
+                <input type="button" value="초기화" style="WIDTH: 60pt; HEIGHT: 20pt" onclick="price_reset()">
+                &nbsp;&nbsp;&nbsp;
+                <input type="button" value="계산하기" style="WIDTH: 60pt; HEIGHT: 20pt" onclick="price_calculate()"> 
+            </td>
+        </tr>
+    </table>
+
+    <br>
+    <table border="2" bordercolor="#D9D9D9">
+        <tr>
+            <td class="sans_sarif">계산식</td>
+            <td>
+                <input type="text" id="formula" class="sans_sarif" size="13" readonly>
+            </td>
+        </tr>
+        <tr>
+            <td class="sans_sarif">사이수 값</td>
+            <td>
+                <input type="text" id="result_sai_exact" class="sans_sarif" size="13" readonly>
+            </td>
+        </tr>
+        <tr>
+            <td class="sans_sarif">참고사항</td>
+            <td>
+                <textarea id="reference" rows="5" cols="15" class="sans_sarif_red" readonly></textarea>
+            </td>
+        </tr>
+    </table>
+
+    <table>
+        <tr>
+            <td class="sans_sarif" size="15" style="text-align: left;">
+                <br>
+                <input type="button" value="홈" style="WIDTH: 100pt; HEIGHT: 20pt" onclick="goto_home()">
+                &nbsp;&nbsp;&nbsp;
+                <input type="button" value="mm 계산기" style="WIDTH: 100pt; HEIGHT: 20pt" onclick="goto_MMtoSai()">
+            </td>
+        </tr>
+        <tr height="70">
+            <td class="sans_sarif" size="15" style="text-align: left;">
+                <input type="button" value="문틀 사이수 계산기" style="WIDTH: 100pt; HEIGHT: 20pt" onclick="goto_DoorToSai()"> 
+                &nbsp;&nbsp;&nbsp;
+                <input type="button" value="핸드레일 계산기" style="WIDTH: 100pt; HEIGHT: 20pt" onclick="goto_HandRail()"> 
+                <br>
+                <br>
+                <br>
+            </td>
+        </tr>
+    </table>
+
+
+    <script>
+
+        function maxLengthCheck(object) {
+            if (object.value.length > object.maxLength) { 
+                object.value = object.value.slice(0, object.maxLength); 
+            } 
+        }
+        
+        function reset() {
+            document.getElementById('length').value = "";
+            document.getElementById('width').value = "";
+            document.getElementById('thickness').value = "";
+            document.getElementById('quantity').value = "";
+            document.getElementById('reference').value = "";
+            document.getElementById('formula').value = "";
+
+            document.getElementById('sai_length').value = "";
+            document.getElementById('sai_width').value = "";
+            document.getElementById('sai_thickness').value = "";
+            document.getElementById('sai_quantity').value = "";
+            document.getElementById('result_sai').value = "";
+            document.getElementById('result_sai_exact').value = "";
+        }
+        
+        function enterkey() {
+            if (window.event.keyCode == 13) {
+                calculate();
+            }
+        }
+
+        function moveToWidth() {
+            if (window.event.keyCode == 13) {
+                document.getElementById('width').focus();
+            }
+        }
+
+        function moveToThickness() {
+            if (window.event.keyCode == 13) {
+                document.getElementById('thickness').focus();
+            }
+        }
+
+        function MoveToQuantity() {
+            if (window.event.keyCode == 13) {
+                document.getElementById('quantity').focus();
+            }
+        }
+
+        function MoveToExtraPrice() {
+            if (window.event.keyCode == 13) {
+                document.getElementById('price_extra').focus();
+            }
+        }
+
+        function enterkey_price() {
+            if (window.event.keyCode == 13) {
+                price_calculate();
+            }
+        }
+        
+        function calculate() {
+
+            document.getElementById('sai_price').value = "";
+            document.getElementById('reference').value = "";
+            
+            var base_wcType = document.getElementById('woodType').value;
+            var base_length = document.getElementById('length').value;
+            var base_width = document.getElementById('width').value;
+            var base_thickness = document.getElementById('thickness').value;
+            var base_quantity = document.getElementById('quantity').value;
+
+            var warning_msg = "";
+            var calcul_length = 0; 
+            var calcul_width = 0; 
+            var calcul_thickness = 0; 
+            var calcul_sai = 0; 
+            var calcul_formula = ""; 
+            
+            // var plus_1za = 0;
+            // var temp_plus_1za = base_length.toString(); 
+
+
+            if ((base_wcType == "meesong" || base_wcType == "rawang") && (base_length == "9" || base_length == "11")) {
+                alert("기장 - 미송과 라왕은 9자와 11자가 없습니다");
+
+                document.getElementById('sai_length').value = "";
+                document.getElementById('sai_width').value = "";
+                document.getElementById('sai_thickness').value = "";
+                document.getElementById('sai_quantity').value = "";
+                document.getElementById('result_sai').value = "";
+                document.getElementById('result_sai_exact').value = "";
+                document.getElementById('reference').value = "";
+                document.getElementById('sai_price').value = "";
+                document.getElementById('formula').value = "";
+
+                return;
+                /* 
+                plus_1za = 1;
+                if (warning_msg.length != 0) {
+                    warning_msg = warning_msg.concat('\n');
+                }
+                warning_msg = warning_msg.concat('(기장) 미송/라왕은 9자/11자 없음, 기장에 1자 추가!');
+                temp_plus_1za = "(" + base_length.toString() + " + 1)"
+                */
+            }
+
+            // calcul_length = (parseFloat(base_length) + plus_1za) * 300;
+            calcul_length = parseFloat(base_length) * 300; 
+            document.getElementById('sai_length').value = calcul_length;
+
+            calcul_width = parseFloat(base_width) * 30;
+            document.getElementById('sai_width').value = calcul_width;
+
+            calcul_thickness = parseFloat(base_thickness) * 30;
+            document.getElementById('sai_thickness').value = calcul_thickness;
+
+            document.getElementById('sai_quantity').value = parseInt(base_quantity);
+
+                
+            // calcul_sai = ((parseFloat(base_length) + parseFloat(plus_1za)) * parseFloat(base_width) * 
+            calcul_sai = (parseFloat(base_length) * parseFloat(base_width) * 
+                parseFloat(base_thickness) * parseFloat(base_quantity)) / 12;
+
+            calcul_formula = base_length.toString() + " * " + base_width.toString() + " * " + 
+                base_thickness.toString() + " * " + base_quantity.toString() + " / 12";
+            
+            
+            document.getElementById('result_sai').value = roundToTwo(calcul_sai);
+            document.getElementById('result_sai_exact').value = calcul_sai;
+            document.getElementById('reference').value = warning_msg;
+            document.getElementById('formula').value = calcul_formula;
+
+        }
+
+
+        function price_calculate() {
+            
+            var base_price_wcType = document.getElementById('woodType').value;
+            var base_price_width = document.getElementById('width').value;
+            var base_price_thickness = document.getElementById('thickness').value;
+            var base_price_qty = document.getElementById('quantity').value;
+            var base_price_length = document.getElementById('length').value;
+
+            // var price_plus_1za = 0;
+            var base_sai = 0;
+            
+            var base_price = document.getElementById('price').value;
+            var base_price_ea = document.getElementById('price_extra').value;
+            
+            var calcul_price = 0; 
+
+            /*
+            if ((base_price_wcType == "meesong" || base_price_wcType == "rawang") && (base_price_length == "9" || base_price_length == "11")) {
+                price_plus_1za = 1;
+            }
+            */
+            
+
+            base_sai = (parseFloat(base_price_length) * parseFloat(base_price_width) * 
+                parseFloat(base_price_thickness) * parseFloat(base_price_qty)) / 12;
+
+            calcul_price = (parseFloat(base_sai) * parseInt(base_price) / parseInt(base_price_qty)) + 
+                    (parseFloat(base_price_length) * parseFloat(base_price_ea));
+
+            document.getElementById('sai_price').value = Math.ceil(calcul_price).toLocaleString('ko-KR');
+            
+        }
+
+        function price_reset () {
+            document.getElementById('price').value = "";
+            document.getElementById('price_extra').value = "";
+            document.getElementById('sai_price').value = "";
+        }
+
+        function roundToTwo(num) {
+            return +(Math.round(num + "e+2")  + "e-2");
+        }
+
+        function goto_home() {
+            window.location.href = './index.html';
+        }
+
+        function goto_MMtoSai() {
+            window.location.href = './Convert_MMtoSai_Calculation.html';
+        }
+
+        function goto_SaiToMM() {
+            window.location.href = './Convert_SaitoMM_Calculation.html';
+        }
+
+        function goto_DoorToSai() {
+            window.location.href = './Convert_DoorSai_Calculation.html';
+        }
+
+        function goto_HandRail() {
+            window.location.href = './Handrail_Calculation.html';
+        }
+
+
+    </script>
+
+</body>
+</html>
+

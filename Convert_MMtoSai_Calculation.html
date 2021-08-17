@@ -1,0 +1,474 @@
+<!-- May 19, 2021 - Hannah -->
+<!-- 구 목재계산기 -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>mm 계산기 - BK Lee</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width" />
+    <link rel="preconnect" href="https://fonts.gstatic.com"> 
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500&display=swap" rel="stylesheet">
+    <style> 
+        .sans_sarif{font-family: 'Noto Sans KR', sans-serif;font-size: small;}
+        .sans_sarif_red{font-family: 'Noto Sans KR', sans-serif;font-size: small; color: red}
+        .sans_sarif_white{font-family: 'Noto Sans KR', sans-serif;font-size: small; color: white}
+        .sans_sarif_xs{font-family: 'Noto Sans KR', sans-serif;font-size: x-small;}
+        .sans_sarif_l{font-family: 'Noto Sans KR', sans-serif;font-size: large;}
+        table {
+            border-collapse: collapse;
+        }
+        td {
+            padding: 3px 10px;
+            text-align: center;
+        }
+        input {
+            border: none;
+            background-color: #f5f5f5;
+            -webkit-appearance:none;
+        }
+        textarea {
+            border: none;
+            background-color: #f5f5f5;
+        }
+        button {
+            appearance: none;
+            -webkit-appearance: none;
+            background-color: #f5f5f5;
+            border-color: #d0d0d0;
+        }
+        input:focus {
+            outline: none;
+        }
+        input[type='number']{
+            width: 70px;
+        } 
+    </style>
+</head>
+
+<body>
+    <P class="sans_sarif_l"><b>mm 계산기</b></P>
+    <table border="2" bordercolor="#D9D9D9">
+        <tr style="background-color:rgb(105,155,208);">
+            <td class="sans_sarif"></td>
+            <td class="sans_sarif_white">기입값</td>
+            <td class="sans_sarif_white">계산값</td>
+        <tr>
+            <td class="sans_sarif">수종</td>
+            <td class="sans_sarif" colspan="2" style="text-align: left;">
+                <select id="wc_woodType" name="wc_woodType" onkeyup="enterkey();">
+                    <option value="meesong">미송</option>
+                    <option value="rawang" selected="selected">라왕</option>
+                    <option value="oak">오크</option>
+                    <option value="ash">애쉬</option>
+                    <option value="walnut">월넛</option>
+                    <option value="mayple">메이플</option>
+                </select>
+            </td>
+        </tr>        
+        <tr>
+            <td class="sans_sarif">기장(mm)</td>
+            <td>
+                <input type="number" id="wc_length" pattern="\d*" placeholder="number" maxlength="10" class="sans_sarif" onkeyup="moveToWidth();" oninput="maxLengthCheck(this)">
+            </td>
+            <td style="background-color:#e3f2fd;" >
+                <input type="text" id="sai_length" maxlength="10" class="sans_sarif" size="6" style="background-color:#e3f2fd;" readonly>
+            </td>
+        </tr>
+        <tr>
+            <td class="sans_sarif">폭(mm)</td>
+            <td>
+                <input type="number" id="wc_width" pattern="\d*" placeholder="number" maxlength="10" class="sans_sarif" onkeyup="moveToThickness();" size="5" oninput="maxLengthCheck(this)">
+            </td>
+            <td style="background-color:#e3f2fd;" >
+                <input type="text" id="sai_width" maxlength="10" class="sans_sarif" size="6" style="background-color:#e3f2fd;" readonly>
+            </td>
+        </tr>
+        <tr>
+            <td class="sans_sarif">두께(mm)</td>
+            <td>
+                <input type="number" id="wc_thickness" pattern="\d*" placeholder="number" maxlength="10" class="sans_sarif" onkeyup="MoveToQuantity();" size="5" oninput="maxLengthCheck(this)">
+            </td>
+            <td style="background-color:#e3f2fd;" >
+                <input type="text" id="sai_thickness" maxlength="10" class="sans_sarif" size="6" style="background-color:#e3f2fd;" readonly>
+            </td>
+        </tr>
+        <tr>
+            <td class="sans_sarif">수량</td>
+            <td>
+                <input type="number" id="wc_quantity" pattern="\d*" placeholder="number" maxlength="10" class="sans_sarif" onkeyup="enterkey();" size="5" oninput="maxLengthCheck(this)">
+            </td>
+            <td style="background-color:#e3f2fd;">
+                <input type="text" id="sai_quantity" maxlength="10" class="sans_sarif" size="6" style="background-color:#e3f2fd;" readonly>
+            </td>
+        </tr>
+        <tr>
+            <td class="sans_sarif">사이수</td>
+            <td>
+            </td>
+            <td style="background-color:#e3f2fd;">
+                <input type="text" id="result_sai" maxlength="10" class="sans_sarif_red" size="6" style="background-color:#e3f2fd;" readonly>
+            </td>
+        </tr>
+        <tr>
+            <td class="sans_sarif">
+            </td>
+            <td class="sans_sarif" size="15" colspan="2" >
+                <input type="button" value="초기화" style="WIDTH: 60pt; HEIGHT: 20pt" onclick="wc_reset()">
+                &nbsp;&nbsp;&nbsp;
+                <input type="button" value="계산하기" style="WIDTH: 60pt; HEIGHT: 20pt" onclick="wc_calculate()"> 
+            </td>
+        </tr>
+    </table>
+
+    <br>
+    <table border="2" bordercolor="#D9D9D9">
+        <tr>
+            <td class="sans_sarif">계산식</td>
+            <td>
+                <input type="text" id="wc_formula" class="sans_sarif" size="14" readonly>
+            </td>
+        </tr>
+        <tr>
+            <td class="sans_sarif">사이수 값</td>
+            <td>
+                <input type="text" id="result_sai_exact" class="sans_sarif" size="14" readonly>
+            </td>
+        </tr>
+        <tr>
+            <td class="sans_sarif">참고사항</td>
+            <td>
+                <!-- <input type="text" id="wc_reference" class="sans_sarif_red" size="20" readonly> -->
+                <textarea id="wc_reference" rows="5" cols="16" class="sans_sarif_red" readonly></textarea>
+            </td>
+        </tr>
+    </table>
+
+    <table>
+        <tr>
+            <td class="sans_sarif" size="15" style="text-align: left;">
+                <br>
+                <input type="button" value="홈" style="WIDTH: 100pt; HEIGHT: 20pt" onclick="goto_home()">
+                &nbsp;&nbsp;&nbsp;
+                <input type="button" value="자/치계산기" style="WIDTH: 100pt; HEIGHT: 20pt" onclick="goto_SaiToMM()">
+                
+            </td>
+        </tr>
+        <tr height="70">
+            <td class="sans_sarif" size="15" style="text-align: left;">
+                <input type="button" value="문틀 사이수 계산기" style="WIDTH: 100pt; HEIGHT: 20pt" onclick="goto_DoorToSai()"> 
+                &nbsp;&nbsp;&nbsp;
+                <input type="button" value="핸드레일 계산기" style="WIDTH: 100pt; HEIGHT: 20pt" onclick="goto_HandRail()">
+                <br>
+                <br>
+                <br>
+            </td>
+        </tr>
+    </table>
+
+    <script>
+
+        function maxLengthCheck(object) {
+            if (object.value.length > object.maxLength) { 
+                object.value = object.value.slice(0, object.maxLength); 
+            } 
+        }
+        
+        function wc_reset() {
+
+            document.getElementById('wc_length').value = "";
+            document.getElementById('wc_width').value = "";
+            document.getElementById('wc_thickness').value = "";
+            document.getElementById('wc_quantity').value = "";
+            document.getElementById('wc_reference').value = "";
+            document.getElementById('wc_formula').value = "";
+
+            document.getElementById('sai_length').value = "";
+            document.getElementById('sai_width').value = "";
+            document.getElementById('sai_thickness').value = "";
+            document.getElementById('sai_quantity').value = "";
+            document.getElementById('result_sai').value = "";
+            document.getElementById('result_sai_exact').value = "";
+
+        }
+        
+        function enterkey() {
+            if (window.event.keyCode == 13) {
+                wc_calculate();
+            }
+        }
+
+        function moveToWidth() {
+            if (window.event.keyCode == 13) {
+                document.getElementById('wc_width').focus();
+            }
+        }
+
+        function moveToThickness() {
+            if (window.event.keyCode == 13) {
+                document.getElementById('wc_thickness').focus();
+            }
+        }
+
+        function MoveToQuantity() {
+            if (window.event.keyCode == 13) {
+                document.getElementById('wc_quantity').focus();
+            }
+        }
+        
+        function wc_calculate() {
+
+            document.getElementById('wc_reference').value = "";
+            
+            var base_wcType = document.getElementById('wc_woodType').value;
+            var base_length = document.getElementById('wc_length').value;
+            var base_width = document.getElementById('wc_width').value;
+            var base_thickness = document.getElementById('wc_thickness').value;
+            var base_quantity = document.getElementById('wc_quantity').value;
+
+            var arr_meesong = [0.5, 0.75, 1, 1.5, 2, 2.5, 3, 4];
+            var arr_rawang = [0.5, 0.75, 1, 1.5, 1.7, 2, 2.2, 2.5, 3, 3.5, 4]; 
+            // 2021-07-25 v7
+            // var arr_oak = [0.55, 0.75, 0.85, 1.1, 1.3, 1.5, 1.7, 2.1, 2.6, 3];  
+            // 2021-07-31 v7 - 0.55 와 3 빠져야되는지 확인 필요 from Byung Kuk v7
+            var arr_oak = [0.55, 0.75, 0.85, 1.1, 1.3, 1.5, 1.7, 2.1, 2.6, 3]; 
+            var arr_ash_walnut_mayple = [0.5, 0.55, 0.85, 1.1, 1.3, 1.5, 1.7];
+
+
+            // variables initialization
+            var calcul_length = 0; 
+            var calcul_width = 0;
+            var calcul_thickness = 0;
+            var calcul_sai = 0; 
+            var calcul_formula = "";
+            // var plus_1za = 0;
+
+            var temp_length = 0; 
+            var temp_width = 0;
+            var temp_thickness = 0;
+
+            var arr_check = false;
+
+ 
+            // length calculation 
+            // 2021-07-31 v7 - ash, walnut and mayple 
+            if (base_wcType == 'ash' || base_wcType == 'walnut' || base_wcType == 'mayple') { 
+                calcul_length = Math.ceil(parseFloat(base_length) * 2 / 303) / 2;
+            }
+            else { // meesong, rawang and oak
+                calcul_length = Math.ceil(parseFloat(base_length) / 303);
+            }
+
+            // width calculation
+            // version 5 
+            /* 
+            if (base_width < 120) {
+
+                // temporary saisoo value calculation 
+                temp_width = (parseFloat(base_width) + 7) / 30.3;
+
+                // compare to exisiting width in array type
+                // if no value found then round up and pick up the value 
+                if (base_wcType == 'meesong') {
+                    for (var w = 0; w < arr_meesong.length; w++) {
+                        if (temp_width <= arr_meesong[w] && arr_check == false) {
+                            arr_check = true;
+                            calcul_width = arr_meesong[w];
+                        }
+                    }
+                } else if (base_wcType == 'rawang') {
+                    for (var w = 0; w < arr_rawang.length; w++) {
+                        if (temp_width <= arr_rawang[w] && arr_check == false) {
+                            arr_check = true; 
+                            calcul_width = arr_rawang[w];
+                        }
+                    }
+                } else if (base_wcType == 'oak') {
+                    // changed from v 4.0 
+                    calcul_width = Math.ceil((parseFloat(base_width) + 9) * 2 / 30.3 ) / 2;
+                }
+
+            } else {
+                if (base_wcType == 'oak') {
+                    calcul_width = Math.ceil((parseFloat(base_width) + 7) / 30.3);
+                } else {
+                    calcul_width = Math.ceil((parseFloat(base_width) + 10) / 30.3);
+                }
+            }
+            */ 
+
+            // 2021-07-31 v7 - adding oak and meesong special case plus, adding ash, walnut and maple cases  
+            if (base_wcType == 'oak' && base_width < 46.1) {
+                // temporary saisoo value calculation 
+                temp_width = (parseFloat(base_width) + 9) / 30.3;
+
+                for (var w = 0; w < arr_oak.length; w++) {
+                    if (temp_width <= arr_oak[w] && arr_check == false) {
+                        arr_check = true;
+                        calcul_width = arr_oak[w];
+                    }
+                }
+            } 
+            else if (base_wcType == 'meesong' && base_width == 40) {
+                calcul_width = 1.7;
+            }
+            else if ((base_wcType == 'ash' || base_wcType == 'walnut' || base_wcType == 'mayple') 
+                    && base_width > 33 && base_width < 51) {
+
+                temp_width = (parseFloat(base_width) + 9) / 30.3;
+
+                for (var w = 0; w < arr_ash_walnut_mayple.length; w++) {
+                    if (temp_width <= arr_ash_walnut_mayple[w] && arr_check == false) {
+                        arr_check = true;
+                        calcul_width = arr_ash_walnut_mayple[w];
+                    }
+                }
+            }
+            else {
+                calcul_width = Math.ceil((parseFloat(base_width) + 9) * 2 / 30.3) / 2;
+            }
+            
+
+            // variables initialization 
+            arr_check = false;
+
+            // compare to exisiting width in array type
+            // if no value found then round up and pick up the value 
+            if (base_wcType == 'meesong') {        
+                
+                // thickness calculation
+                temp_thickness = (parseInt(base_thickness) + 4) / 30;            
+
+                for (var w = 0; w < arr_meesong.length; w++) {
+                    if (temp_thickness <= arr_meesong[w] && arr_check == false) {
+                        arr_check = true;
+                        calcul_thickness = arr_meesong[w];
+                    }
+                }
+
+            } else if (base_wcType == 'rawang') {
+
+                // thickness calculation
+                temp_thickness = (parseInt(base_thickness) + 4) / 30;  
+
+                for (var w = 0; w < arr_rawang.length; w++) {
+                    if (temp_thickness <= arr_rawang[w] && arr_check == false) {
+                        arr_check = true; 
+                        calcul_thickness = arr_rawang[w];
+                    }
+                }
+            } else if (base_wcType == 'oak') {
+                
+                // thickness calculation
+                temp_thickness = (parseInt(base_thickness) + 5) / 30;  
+
+                for (var w = 0; w < arr_oak.length; w++) {
+                    if (temp_thickness <= arr_oak[w] && arr_check == false) {
+                        arr_check = true; 
+                        calcul_thickness = arr_oak[w];
+                    }
+                }
+            }
+            else { // ash, walnut and mayple 
+                // thickness calculation
+                temp_thickness = (parseInt(base_thickness) + 5) / 30.3;  
+
+                for (var w = 0; w < arr_ash_walnut_mayple.length; w++) {
+                    if (temp_thickness <= arr_ash_walnut_mayple[w] && arr_check == false) {
+                        arr_check = true; 
+                        calcul_thickness = arr_ash_walnut_mayple[w];
+                    }
+                }
+            }
+            
+            warning_msg = "";
+            // plus_1za = 0;
+
+            // version 5 
+            if ((base_wcType == "meesong" || base_wcType == "rawang") && (calcul_length == "9" || calcul_length == "11")) {
+                // warning_msg = "(기장) 라왕과 오크는 9와 11자가 없습니다 1자를 더합니다! ";
+                // plus_1za = 1;
+
+                alert("기장 - 미송과 라왕은 9자와 11자가 없습니다");
+
+                document.getElementById('wc_reference').value = "";
+                document.getElementById('wc_formula').value = "";
+                document.getElementById('sai_length').value = "";
+                document.getElementById('sai_width').value = "";
+                document.getElementById('sai_thickness').value = "";
+                document.getElementById('sai_quantity').value = "";
+                document.getElementById('result_sai').value = "";
+                document.getElementById('result_sai_exact').value = "";
+                return; 
+            }
+
+            if (calcul_width == 0) {
+                if (warning_msg.length != 0) {
+                    warning_msg = warning_msg.concat('\n');
+                }
+                warning_msg = warning_msg.concat('(폭) 알맞은 폭의 사이수를 찾지 못했습니다!');
+            }
+
+            if(calcul_thickness == 0) {
+                if (warning_msg.length != 0) {
+                    warning_msg = warning_msg.concat('\n');
+                }
+                warning_msg = warning_msg.concat('(두께) 알맞은 두께의 사이수를 찾지 못했습니다!');
+            }
+
+            document.getElementById('wc_reference').value = warning_msg;
+
+
+            // calcul_sai = ((parseFloat(calcul_length) + parseInt(plus_1za)) * parseFloat(calcul_width) * parseFloat(calcul_thickness) * parseFloat(base_quantity) / 12);
+            calcul_sai = (parseFloat(calcul_length) * parseFloat(calcul_width) * parseFloat(calcul_thickness) * parseFloat(base_quantity) / 12);
+
+            // document.getElementById('sai_length').value = calcul_length + parseInt(plus_1za);
+            document.getElementById('sai_length').value = calcul_length;
+            document.getElementById('sai_width').value = calcul_width; 
+            document.getElementById('sai_thickness').value = calcul_thickness;
+            document.getElementById('sai_quantity').value = base_quantity;
+            document.getElementById('result_sai').value = roundToTwo(calcul_sai);
+            document.getElementById('result_sai_exact').value = calcul_sai;
+
+
+            /*
+            if (plus_1za > 0)
+            {
+                calcul_formula = "( " + calcul_length.toString() + " + " + plus_1za.toString() + " )"+ " * " + calcul_width.toString() + " * " + calcul_thickness.toString() + " / 12";
+            } 
+            else
+            */
+            calcul_formula = calcul_length.toString() + " * " + calcul_width.toString() + " * " + calcul_thickness.toString() + " / 12";
+            document.getElementById('wc_formula').value = calcul_formula;
+        }
+
+        function roundToTwo(num) {
+            return +(Math.round(num + "e+2")  + "e-2");
+        }
+
+        function goto_home() {
+            window.location.href = './index.html';
+        }
+
+        function goto_MMtoSai() {
+            window.location.href = './Convert_MMtoSai_Calculation.html';
+        }
+
+        function goto_SaiToMM() {
+            window.location.href = './Convert_SaitoMM_Calculation.html';
+        }
+
+        function goto_DoorToSai() {
+            window.location.href = './Convert_DoorSai_Calculation.html';
+        }
+
+        function goto_HandRail() {
+            window.location.href = './Handrail_Calculation.html';
+        }
+
+
+    </script>
+
+</body>
+</html>
+

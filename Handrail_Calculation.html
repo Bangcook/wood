@@ -1,0 +1,226 @@
+<!-- June 28, 2021 - Hannah -->
+<!-- 핸드레일 계산기 -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>핸드레일 계산기 - BK Lee</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width" />
+    <link rel="preconnect" href="https://fonts.gstatic.com"> 
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500&display=swap" rel="stylesheet">
+    <style> 
+        .sans_sarif{font-family: 'Noto Sans KR', sans-serif;font-size: small;}
+        .sans_sarif_red{font-family: 'Noto Sans KR', sans-serif;font-size: small; color: red}
+        .sans_sarif_white{font-family: 'Noto Sans KR', sans-serif;font-size: small; color: white}
+        .sans_sarif_xs{font-family: 'Noto Sans KR', sans-serif;font-size: x-small;}
+        .sans_sarif_l{font-family: 'Noto Sans KR', sans-serif;font-size: large;}
+        table {
+            border-collapse: collapse;
+        }
+        td {
+            padding: 3px 10px;
+            text-align: center;
+        }
+        input {
+            border: none;
+            background-color: #f5f5f5;
+            -webkit-appearance:none;
+        }
+        textarea {
+            border: none;
+            background-color: #f5f5f5;
+        }
+        button {
+            appearance: none;
+            -webkit-appearance: none; 
+            background-color: #f5f5f5;
+            border-color: #d0d0d0;
+        }
+        input:focus {
+            outline: none;
+        }
+        input[type='number']{
+            width: 70px;
+        } 
+    </style>
+</head>
+
+<body>
+    <P class="sans_sarif_l"><b>핸드레일 계산기</b></P>
+    <table border="2" bordercolor="#D9D9D9">
+        <tr style="background-color:rgb(135,151,174);">
+            <td class="sans_sarif"></td>
+            <td class="sans_sarif_white">기입값</td>
+            <td class="sans_sarif_white">계산값</td>  
+        <tr>
+            <td class="sans_sarif">r 파이</td>
+            <td>
+                <input type="number" id="pai" pattern="\d*" placeholder="number" maxlength="10" class="sans_sarif" onkeyup="moveToGroove();" oninput="maxLengthCheck(this)">
+            </td>
+            <td style="background-color:rgb(215,220,227);" >
+                <input type="text" id="result_pai" maxlength="10" class="sans_sarif" size="6" style="background-color:rgb(215,220,227);" readonly>
+            </td>
+        </tr>
+        <tr>
+            <td class="sans_sarif">β 홈 폭</td>
+            <td>
+                <input type="number" id="groove_width" pattern="\d*" placeholder="number" maxlength="10" class="sans_sarif" onkeyup="enterkey();" size="5" oninput="maxLengthCheck(this)">
+            </td>
+            <td style="background-color:rgb(215,220,227);" >
+                <input type="text" id="result_groove_width" maxlength="10" class="sans_sarif" size="6" style="background-color:rgb(215,220,227);" readonly>
+            </td>
+        </tr>
+        <tr>
+            <td class="sans_sarif">α 바닥 (자동책정)</td>
+            <td>
+            </td>
+            <td style="background-color:rgb(215,220,227);" >
+                <input type="text" id="result_alpha_underside" maxlength="10" class="sans_sarif" size="6" style="background-color:rgb(215,220,227);" readonly>
+            </td>
+        </tr>
+        <tr>
+            <td class="sans_sarif">원형핸드레일 높이</td>
+            <td>
+            </td>
+            <td style="background-color:rgb(215,220,227);" >
+                <input type="text" id="result_handrail" maxlength="10" class="sans_sarif_red" size="6" style="background-color:rgb(215,220,227);" readonly>
+            </td>
+        </tr>
+        <tr>
+            <td class="sans_sarif">
+            </td>
+            <td class="sans_sarif" size="15" colspan="2" >
+                <input type="button" value="초기화" style="WIDTH: 60pt; HEIGHT: 20pt" onclick="reset()">
+                &nbsp;&nbsp;&nbsp;
+                <input type="button" value="계산하기" style="WIDTH: 60pt; HEIGHT: 20pt" onclick="handrail_calculate()"> 
+            </td>
+        </tr>
+    </table>
+
+    <br>
+    <table border="2" bordercolor="#D9D9D9">
+        <tr>
+            <td class="sans_sarif">계산식</td>
+            <td>
+                <input type="text" id="formula" class="sans_sarif" size="18" readonly>
+            </td>
+        </tr>
+        <tr>
+            <td class="sans_sarif">참고사항</td>
+            <td>
+                <textarea id="reference" rows="5" cols="20" class="sans_sarif_red" readonly></textarea>
+            </td>
+        </tr>
+    </table>
+
+    <table>
+        <tr>
+            <td class="sans_sarif" size="15" style="text-align: left;">
+                <br>
+                <input type="button" value="홈" style="WIDTH: 100pt; HEIGHT: 20pt" onclick="goto_home()">
+                &nbsp;&nbsp;&nbsp;
+                <input type="button" value="mm 계산기" style="WIDTH: 100pt; HEIGHT: 20pt" onclick="goto_MMtoSai()">
+            </td>
+        </tr>
+        <tr height="70">
+            <td class="sans_sarif" size="15" style="text-align: left;">
+                <input type="button" value="자/치계산기" style="WIDTH: 100pt; HEIGHT: 20pt" onclick="goto_SaiToMM()"> 
+                &nbsp;&nbsp;&nbsp;
+                <input type="button" value="문틀 사이수 계산기" style="WIDTH: 100pt; HEIGHT: 20pt" onclick="goto_DoorToSai()"> 
+                <br>
+                <br>
+                <br>
+            </td>
+        </tr>
+    </table>
+
+    <script>
+
+        function maxLengthCheck(object) {
+            if (object.value.length > object.maxLength) { 
+                object.value = object.value.slice(0, object.maxLength); 
+            } 
+        }
+        
+        function reset() {
+
+            document.getElementById('pai').value = "";
+            document.getElementById('groove_width').value = "";
+            document.getElementById('reference').value = "";
+
+            document.getElementById('result_pai').value = "";
+            document.getElementById('result_groove_width').value = "";
+            document.getElementById('result_alpha_underside').value = "";
+            document.getElementById('result_handrail').value = "";
+
+        }
+        
+        function enterkey() {
+            if (window.event.keyCode == 13) {
+                handrail_calculate();
+            }
+        }
+
+        function moveToGroove() {
+            if (window.event.keyCode == 13) {
+                document.getElementById('groove_width').focus();
+            }
+        }
+
+        function roundToTwo(num) {
+            return +(Math.round(num + "e+2")  + "e-2");
+        }
+
+        function handrail_calculate() {
+
+            document.getElementById('reference').value = "";
+            
+            var base_pai = document.getElementById('pai').value;
+            var base_groove_width = document.getElementById('groove_width').value;
+            var base_alpha_underside = 0.0; 
+
+
+            // variables initialization
+            var calcul_handrail = 0.0;
+            var calcul_alpha_underside = 0.0 
+            
+            calcul_alpha_underside = parseFloat(base_pai) / 10;
+
+            // =ROUND(  ( ((I7/2)^2) - (((I8+4)/2)^2) ) ^(1/2) + (I7/2) - 5, 2)
+            // calcul_handrail = Math.pow((Math.pow(parseInt(base_pai)/2,2) - Math.pow(((parseInt(base_groove_width) + 4) / 2 ), 2)), (1/2)) + (parseFloat(base_pai)/2) - 5;
+            
+            // 2021-07-25 v7
+            // ROUND((((I6/2)^2)-(((I7/2)+I8)^2))^(1/2)+(I6/2),2)
+            calcul_handrail = Math.pow( Math.pow(parseInt(base_pai)/2,2) - Math.pow( (parseInt(base_groove_width) / 2) + parseFloat(calcul_alpha_underside), 2), 1/2 ) + (parseFloat(base_pai)/2);
+
+            document.getElementById('result_pai').value = base_pai;
+            document.getElementById('result_groove_width').value = base_groove_width;
+            document.getElementById('result_alpha_underside').value = calcul_alpha_underside;
+            document.getElementById('result_handrail').value = roundToTwo(calcul_handrail);
+            document.getElementById('reference').value = calcul_handrail; 
+
+        }
+
+        function goto_home() {
+            window.location.href = './index.html';
+        }
+
+        function goto_MMtoSai() {
+            window.location.href = './Convert_MMtoSai_Calculation.html';
+        }
+
+        function goto_SaiToMM() {
+            window.location.href = './Convert_SaitoMM_Calculation.html';
+        }
+
+        function goto_DoorToSai() {
+            window.location.href = './Convert_DoorSai_Calculation.html';
+        }
+
+
+    </script>
+
+</body>
+</html>
+
