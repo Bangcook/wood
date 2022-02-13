@@ -142,6 +142,12 @@
             </td>
         </tr>
         <tr>
+            <td class="sans_sarif">총 단가</td>
+            <td style="background-color:rgb(248,229,216);" >
+                <input type="text" id="sai_price_total" maxlength="10" class="sans_sarif_red" size="12" style="background-color:rgb(248,229,216);" readonly>
+            </td>
+        </tr>
+        <tr>
             <td class="sans_sarif">
             </td>
             <td class="sans_sarif" size="15" colspan="2" >
@@ -259,6 +265,7 @@
         function calculate() {
 
             document.getElementById('sai_price').value = "";
+            document.getElementById('sai_price_total').value = "";
             document.getElementById('reference').value = "";
             
             var base_wcType = document.getElementById('woodType').value;
@@ -289,6 +296,7 @@
                 document.getElementById('result_sai_exact').value = "";
                 document.getElementById('reference').value = "";
                 document.getElementById('sai_price').value = "";
+                document.getElementById('sai_price_total').value = "";
                 document.getElementById('formula').value = "";
 
                 return;
@@ -346,6 +354,7 @@
             var base_price_ea = document.getElementById('price_extra').value;
             
             var calcul_price = 0; 
+            var calcul_price_total = 0; 
 
             /*
             if ((base_price_wcType == "meesong" || base_price_wcType == "rawang") && (base_price_length == "9" || base_price_length == "11")) {
@@ -359,8 +368,15 @@
 
             calcul_price = (parseFloat(base_sai) * parseInt(base_price) / parseInt(base_price_qty)) + 
                     (parseFloat(base_price_length) * parseFloat(base_price_ea));
+            
+            if (parseFloat(calcul_price) < 3000) {
+                calcul_price = 3000; 
+            }
+
+            calcul_price_total = parseFloat(calcul_price) * parseInt(base_price_qty); 
 
             document.getElementById('sai_price').value = Math.ceil(calcul_price).toLocaleString('ko-KR');
+            document.getElementById('sai_price_total').value = Math.ceil(calcul_price_total).toLocaleString('ko-KR');
             
         }
 
@@ -368,6 +384,7 @@
             document.getElementById('price').value = "";
             document.getElementById('price_extra').value = "";
             document.getElementById('sai_price').value = "";
+            document.getElementById('sai_price_total').value = "";
         }
 
         function roundToTwo(num) {
